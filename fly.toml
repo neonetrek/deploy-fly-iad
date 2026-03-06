@@ -1,52 +1,58 @@
-app = "neonetrek-iad"
-primary_region = "iad"
+# fly.toml app configuration file generated for neonetrek-iad on 2026-03-06T21:47:30Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'neonetrek-iad'
+primary_region = 'iad'
 
 [build]
 
 [env]
-  WS_PORT = "3000"
+  WS_PORT = '3000'
 
-# Persistent volume for player accounts, stats, and game state.
-# Data lives in /opt/netrek/var (players, players.index, scores, planets, etc.)
-[mounts]
-  source = "netrek_data"
-  destination = "/opt/netrek/var"
+[[mounts]]
+  source = 'netrek_data'
+  destination = '/opt/netrek/var'
 
-# HTTP service: web client + WebSocket proxy
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
 [[services]]
-  protocol = "tcp"
+  protocol = 'tcp'
   internal_port = 3000
 
   [[services.ports]]
     port = 80
-    handlers = ["http"]
+    handlers = ['http']
 
   [[services.ports]]
     port = 443
-    handlers = ["tls", "http"]
+    handlers = ['tls', 'http']
 
   [services.concurrency]
-    type = "connections"
+    type = 'connections'
     hard_limit = 100
     soft_limit = 50
 
   [[services.http_checks]]
-    interval = 10000
-    grace_period = "30s"
-    method = "get"
-    path = "/health"
-    protocol = "http"
-    timeout = 2000
+    interval = '10s'
+    timeout = '2s'
+    grace_period = '30s'
+    method = 'get'
+    path = '/health'
+    protocol = 'http'
 
 [checks]
   [checks.health]
-    type = "http"
     port = 3000
-    path = "/health"
-    interval = "10s"
-    timeout = "2s"
-    grace_period = "30s"
-
-[[vm]]
-  cpus = 2
-  memory = "512mb"
+    type = 'http'
+    interval = '10s'
+    timeout = '2s'
+    grace_period = '30s'
+    path = '/health'
