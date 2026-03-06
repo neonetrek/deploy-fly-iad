@@ -1,4 +1,7 @@
 {
+  "analytics": {
+    "umamiWebsiteId": "7795a0a2-1aec-4d26-ba45-19b47c4d6dc8"
+  },
   "server": {
     "name": "NeoNetrek Washington DC",
     "tagline": "US East Coast NeoNetrek server.",
